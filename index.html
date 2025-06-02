@@ -109,7 +109,7 @@ function fireworkBurst(position) {
 const messages = ["Linh Chuche", "Xinh Iu", "Cute", "Xinh Ngoan", "I Love You"];
 const textMeshes = [];
 const fontLoader = new THREE.FontLoader();
-fontLoader.load('https://threejs.org/examples/fonts/helvetiker_bold.typeface.json', function (font) {
+fontLoader.load('fonts/BeVietnamPro-Regular.typeface.json', function (font) {
   function spawn3DText(message) {
     const geometry = new THREE.TextGeometry(message, {
       font: font,
