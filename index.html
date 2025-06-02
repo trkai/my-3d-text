@@ -34,7 +34,7 @@ const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 2000);
 camera.position.set(0, 20, 60);
 
-const renderer = new THREE.WebGLRenderer({ antialias: true });
+const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
@@ -48,6 +48,7 @@ const light = new THREE.PointLight(0xffffff, 2);
 light.position.set(0, 50, 50);
 scene.add(light);
 
+// Background stars
 const starGeo = new THREE.BufferGeometry();
 const starCount = 2000;
 const starPos = [];
@@ -61,6 +62,7 @@ const starMat = new THREE.PointsMaterial({ size: 1.2, color: 0xffffff });
 const stars = new THREE.Points(starGeo, starMat);
 scene.add(stars);
 
+// Heart
 let heart;
 const loader = new THREE.GLTFLoader();
 loader.load('Heart.glb', function (gltf) {
@@ -70,6 +72,7 @@ loader.load('Heart.glb', function (gltf) {
   scene.add(heart);
 });
 
+// Heart particles
 const heartTex = new THREE.TextureLoader().load('https://cdn-icons-png.flaticon.com/512/833/833472.png');
 const heartMat = new THREE.PointsMaterial({ size: 2, map: heartTex, transparent: true });
 const heartGeo = new THREE.BufferGeometry();
@@ -82,9 +85,10 @@ heartGeo.setAttribute('position', new THREE.Float32BufferAttribute(heartPosition
 const hearts = new THREE.Points(heartGeo, heartMat);
 scene.add(hearts);
 
+// Firework effect
 const fireworkParticles = [];
 function fireworkBurst(position) {
-  for (let i = 0; i < 200; i++) {
+  for (let i = 0; i < 60; i++) {
     const color = new THREE.Color(`hsl(${Math.random() * 360}, 100%, 70%)`);
     const mat = new THREE.MeshBasicMaterial({ color, transparent: true });
     const geo = new THREE.SphereGeometry(0.4, 8, 8);
@@ -101,6 +105,7 @@ function fireworkBurst(position) {
   }
 }
 
+// Text
 const messages = ["Linh Chuche", "Xinh Iu", "Cute", "Xinh Ngoan", "I Love You"];
 const textMeshes = [];
 const fontLoader = new THREE.FontLoader();
@@ -110,11 +115,8 @@ fontLoader.load('https://threejs.org/examples/fonts/helvetiker_bold.typeface.jso
       font: font,
       size: 4,
       height: 1,
-      curveSegments: 12,
-      bevelEnabled: true,
-      bevelThickness: 0.3,
-      bevelSize: 0.2,
-      bevelSegments: 5
+      curveSegments: 4,
+      bevelEnabled: false
     });
     const pinkMat = new THREE.MeshBasicMaterial({ color: 0xff69b4, transparent: true });
     const blackMat = new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true });
@@ -130,15 +132,17 @@ fontLoader.load('https://threejs.org/examples/fonts/helvetiker_bold.typeface.jso
       fading: false,
       fadeTime: 1.0
     };
+    textMesh.frustumCulled = false;
     scene.add(textMesh);
     textMeshes.push(textMesh);
   }
+
   setInterval(() => {
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < 1; i++) {
       const msg = messages[Math.floor(Math.random() * messages.length)];
       spawn3DText(msg);
     }
-  }, 300);
+  }, 500);
 });
 
 let t = 0;
@@ -152,7 +156,7 @@ function animate() {
   }
 
   stars.rotation.y += 0.001;
-  stars.position.z = Math.sin(t * 0.2) * 50; // Parallax effect
+  stars.position.z = Math.sin(t * 0.2) * 50;
 
   const positions = hearts.geometry.attributes.position.array;
   for (let i = 1; i < positions.length; i += 3) {
